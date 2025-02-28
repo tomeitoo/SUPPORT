@@ -3,10 +3,11 @@ const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 
 // クライアントの初期化
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+require('dotenv').config();
+const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
+const http = require('http');
 client.once('ready', () => {
     console.log(`${client.user.tag} がオンラインになりました！`);
-    
-    // プレイ中のステータスを設定
     client.user.setActivity('人間をサポート中...', { type: ActivityType.Playing });
 });
 // グローバル変数の初期化
