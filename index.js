@@ -149,6 +149,22 @@ client.on('interactionCreate', async interaction => {
 
             await interaction.reply({ embeds: [crimeEmbed] });
             break;
+            case 'attendance':
+    const attendanceStatus = interaction.options.getString('status');
+    const attendanceReason = interaction.options.getString('reason');
+    
+    const attendanceEmbed = new EmbedBuilder()
+        .setColor('#FFA500')
+        .setTitle('出欠登録')
+        .addFields(
+            { name: '出欠', value: attendanceStatus, inline: true },
+            { name: '理由', value: attendanceReason, inline: true },
+            { name: '登録者', value: interaction.user.tag, inline: true },
+            { name: '登録日時', value: new Date().toLocaleString('ja-JP'), inline: false }
+        );
+    
+    await interaction.reply({ embeds: [attendanceEmbed] });
+    break;
     }
 });
 
