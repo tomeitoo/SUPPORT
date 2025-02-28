@@ -82,6 +82,28 @@ const commands = [
                 required: true
             }
         ]
+    },
+    {
+        name: 'attendance',
+        description: '出欠を登録します',
+        options: [
+            {
+                name: 'status',
+                type: 3, // STRING
+                description: '参加 or 不参加',
+                required: true,
+                choices: [
+                    { name: '参加', value: '参加' },
+                    { name: '不参加', value: '不参加' }
+                ]
+            },
+            {
+                name: 'reason',
+                type: 3, // STRING
+                description: '理由を入力してください',
+                required: true
+            }
+        ]
     }
     
 ];
