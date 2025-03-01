@@ -321,13 +321,6 @@ setInterval(async () => {
     }
 }, 60000);
 
-// 既存のDiscordボットコード
-client.once('ready', () => {
-    console.log(`${client.user.tag} がオンラインになりました！`);
-    setPresence(client);  // プレゼンスの設定
-    // その他の設定（必要に応じて追加）
-});
-
 // HTTPサーバーの追加
 const server = createServer((req, res) => {
     res.writeHead(200);
