@@ -59,12 +59,20 @@ client.on('interactionCreate', async interaction => {
             
             const expenseEmbed = new EmbedBuilder()
                 .setColor('#FFA500')
-                .setTitle('🪙 経費を請求しました')
+                .setTitle('💸 経費を請求しました')
                 .addFields(
                     { name: '金額', value: `${amount.toLocaleString()}円`, inline: true },
                     { name: '理由', value: reason, inline: true },
                     { name: '使用者', value: interaction.user.tag, inline: true },
-                    { name: '使用日時', value: new Date().toLocaleString('ja-JP'), inline: false },
+                    { name: '使用日時', value: new Date().toLocaleString('ja-JP',{
+                        timeZone: 'Asia/Tokyo',
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }), inline: false },
                     { name: '残高', value: `${newBalance.toLocaleString()}円`, inline: true }
                 );
 
@@ -160,11 +168,18 @@ client.on('interactionCreate', async interaction => {
             { name: '出欠', value: attendanceStatus, inline: true },
             { name: '理由', value: attendanceReason, inline: true },
             { name: '登録者', value: interaction.user.tag, inline: true },
-            { name: '登録日時', value: new Date().toLocaleString('ja-JP'), inline: false }
+            { name: '登録日時', value: new Date().toLocaleString('ja-JP',{
+                timezone: 'Asia/Tokyo',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false}), inline: false }
         );
     
     await interaction.reply({ embeds: [attendanceEmbed] });
-    break;
+    break;            
     }
 });
 
@@ -208,18 +223,27 @@ setInterval(async () => {
         scheduledCrimes.set(guildId, crimes);
     }
 }, 60000);
-// HTTPサーバーの追加
+const { Client, GatewayIntentBits } = require("discord.js");
 const http = require('http');
-const server = http.createServer((req, res) => {
-    res.writeHead(200);
-    res.end('Bot is running!');
-});
-server.listen(8000);
+const dotenv = require("dotenv");
+const setPresence = require("./setPresence");  // setPresenceのインポート
+
+dotenv.config(); // .envファイルの読み込み
 
 // 既存のDiscordボットコード
 client.once('ready', () => {
     console.log(`${client.user.tag} がオンラインになりました！`);
-    // その他の設定
+    setPresence(client);  // プレゼンスの設定
+    // その他の設定（必要に応じて追加）
+});
+
+// HTTPサーバーの追加
+const server = http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('Bot is running!');
+});
+server.listen(8000, () => {
+    console.log("Server is running on port 8000");
 });
 
 // 環境変数からトークンを読み込んでボットを起動
