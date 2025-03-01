@@ -226,9 +226,9 @@ setInterval(async () => {
 
 // /eventコマンド
 const eventResponses = new Map();
+switch (commandName) {
 
-client.on('interactionCreate', async interaction => {
-    if (interaction.isCommand() && interaction.commandName === 'event') {
+    case 'event':
         const title = interaction.options.getString('title');
         const datetime = interaction.options.getString('datetime');
         const description = interaction.options.getString('description');
@@ -248,47 +248,36 @@ client.on('interactionCreate', async interaction => {
             fetchReply: true 
         });
 
-        // リアクションを追加
-        await message.react('🙆‍♂️'); // 参加
-        await message.react('🙅‍♂️'); // 不参加
-        await message.react('🔒'); // 締切
+        await message.react('🙆‍♂️');
+        await message.react('🙅‍♂️');
 
-        // イベントデータを保存
         eventResponses.set(message.id, {
             participants: [],
-            declined: new Map(),
-            deadline: deadline
+            declined: [],
+            deadline: deadline,
+            channelId: interaction.channelId
         });
-    }
-});
-
-// リアクション処理の追加
+        break;
+}
 client.on('messageReactionAdd', async (reaction, user) => {
     if (user.bot) return;
 
     const eventData = eventResponses.get(reaction.message.id);
     if (!eventData) return;
 
-    switch (reaction.emoji.name) {
-        case '✅':
+    if (reaction.emoji.name === '🙆‍♂️') {
+        if (!eventData.participants.includes(user.id)) {
             eventData.participants.push(user.id);
-            await user.send('参加を記録しました。');
-            break;
-        case '❌':
-            const dmChannel = await user.createDM();
-            await dmChannel.send('不参加の理由を入力してください。');
-            
-            const filter = m => m.author.id === user.id;
-            const collected = await dmChannel.awaitMessages({ filter, max: 1, time: 30000 });
-            
-            const reason = collected.first()?.content || '理由なし';
-            eventData.declined.set(user.id, reason);
-            await user.send('不参加を記録しました。');
-            break;
+            eventData.declined = eventData.declined.filter(id => id !== user.id);
+        }
+    } else if (reaction.emoji.name === '🙅‍♂️') {
+        if (!eventData.declined.includes(user.id)) {
+            eventData.declined.push(user.id);
+            eventData.participants = eventData.participants.filter(id => id !== user.id);
+        }
     }
 });
 
-// 締切時間チェック用の定期実行
 setInterval(async () => {
     const now = new Date();
     
@@ -300,21 +289,27 @@ setInterval(async () => {
         deadlineTime.setHours(hours, minutes, 0);
 
         if (now >= deadlineTime) {
-            const message = await interaction.channel.messages.fetch(messageId);
-            
-            const summaryEmbed = new EmbedBuilder()
-                .setColor('#FFA500')
-                .setTitle(message.embeds[0].title)
-                .addFields(
-                    { name: '参加者', value: eventData.participants.map(id => `<@${id}>`).join('\n') || 'なし' },
-                    { name: '不参加者/理由', value: Array.from(eventData.declined.entries()).map(([id, reason]) => `<@${id}> / ${reason}`).join('\n') || 'なし' }
-                );
+            try {
+                const channel = await client.channels.fetch(eventData.channelId);
+                const message = await channel.messages.fetch(messageId);
+                
+                const summaryEmbed = new EmbedBuilder()
+                    .setColor('#FFA500')
+                    .setTitle(`${message.embeds[0].title} - 募集結果`)
+                    .addFields(
+                        { name: '参加者', value: eventData.participants.map(id => `<@${id}>`).join('\n') || 'なし' },
+                        { name: '不参加者', value: eventData.declined.map(id => `<@${id}>`).join('\n') || 'なし' }
+                    );
 
-            await message.reply({ embeds: [summaryEmbed] });
-            eventResponses.delete(messageId);
+                await message.reply({ embeds: [summaryEmbed] });
+                eventResponses.delete(messageId);
+            } catch (error) {
+                console.error('締切処理エラー:', error);
+            }
         }
     }
 }, 60000);
+
 
 
 const http = require('http');
