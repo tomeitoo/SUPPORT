@@ -221,16 +221,6 @@ client.once('ready', () => {
     console.log(`${client.user.tag} がオンラインになりました！`);
     // その他の設定
 });
-const dotenv = require("dotenv");
-const setPresence = require("./setPresence");  // setPresenceのインポート
-
-dotenv.config(); // .envファイルの読み込み
-
-client.once('ready', () => {
-    console.log(`${client.user.tag} がオンラインになりました！`);
-    setPresence(client);  // プレゼンスの設定
-});
-
 
 // 環境変数からトークンを読み込んでボットを起動
 client.login(process.env.DISCORD_TOKEN);
