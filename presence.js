@@ -1,6 +1,9 @@
-module.exports = (client) => {
+module.exports = function setPresence(client) {
     client.user.setPresence({
-        activities: [{ name: "RPサーバーに参加中", type: 5 }],
-        status: "online" // online, idle, dnd, invisible
+        activities: [{
+            name: 'RPサーバーに参加中',
+            type: 'COMPETING'
+        }],
+        status: 'online'
     });
 };
