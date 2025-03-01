@@ -237,20 +237,18 @@ client.on('interactionCreate', async interaction => {
        
 
         case 'event':
-            const title = interaction.options.getString('title');
-            const datetime = interaction.options.getString('datetime');
-            const description = interaction.options.getString('description');
-            const deadline = interaction.options.getString('deadline');
-
+            const title = interaction.options.getString('title') || 'イベント';
+            const datetime = interaction.options.getString('datetime') || '未定';
+            const description = interaction.options.getString('description') || '詳細なし';
+            const deadline = interaction.options.getString('deadline') || '締切なし'; 
             const eventEmbed = new EmbedBuilder()
-                .setColor('#FFA500')
-                .setTitle('📅 ' + title)
-                .addFields(
-                    { name: '開催日時', value: datetime, inline: true },
-                    { name: '詳細', value: description },
-                    { name: '募集締切', value: deadline || '締切なし', inline: true }
-                );
-
+            .setColor('#FFA500')
+            .setTitle('📅 ' + title)
+            .addFields([
+                { name: '開催日時', value: datetime, inline: true },
+                { name: '詳細', value: description },
+                { name: '募集締切', value: deadline, inline: true } 
+            ]);
             const message = await interaction.reply({
                 embeds: [eventEmbed],
                 fetchReply: true
