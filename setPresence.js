@@ -4,6 +4,6 @@ module.exports = function(client) {
         status: 'online',
         activities: [{ name: 'サポート中', type: 'PLAYING' }]
     })
-    .then(() => console.log("Presence updated!"))
+    console.log("Presence updated!"))
     .catch(console.error);
 };
