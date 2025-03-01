@@ -321,10 +321,6 @@ setInterval(async () => {
     }
 }, 60000);
 
-
-const http = require('http');
-const dotenv = require("dotenv");
-
 dotenv.config(); // .envファイルの読み込み
 
 // 既存のDiscordボットコード
