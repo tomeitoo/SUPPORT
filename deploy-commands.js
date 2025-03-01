@@ -119,7 +119,7 @@ const commands = [
                 name: 'datetime',
                 type: 3,
                 description: '実施日時 (YYYY/MM/DD HH:MM)',
-                required: true
+                required:false 
             },
             {
                 name: 'description',
@@ -135,8 +135,8 @@ const commands = [
             }
         ]
     },
-    
 ];
+
 
 const rest = new REST({ version: '9' }).setToken(TOKEN);
 
