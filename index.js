@@ -228,41 +228,48 @@ setInterval(async () => {
         scheduledCrimes.set(guildId, crimes);
     }
 }, 60000);
+// /eventコマンドの処理
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isCommand()) return;
 
-// /eventコマンド
-switch (commandName) {
+    const { commandName, options, guildId } = interaction;
 
-    case 'event':
-        const title = interaction.options.getString('title');
-        const datetime = interaction.options.getString('datetime');
-        const description = interaction.options.getString('description');
-        const deadline = interaction.options.getString('deadline');
+    switch (commandName) {
+       
 
-        const eventEmbed = new EmbedBuilder()
-            .setColor('#FFA500')
-            .setTitle('📅 ' + title)
-            .addFields(
-                { name: '開催日時', value: datetime, inline: true },
-                { name: '詳細', value: description },
-                { name: '募集締切', value: deadline || '締切なし', inline: true }
-            );
+        case 'event':
+            const title = interaction.options.getString('title');
+            const datetime = interaction.options.getString('datetime');
+            const description = interaction.options.getString('description');
+            const deadline = interaction.options.getString('deadline');
 
-        const message = await interaction.reply({ 
-            embeds: [eventEmbed], 
-            fetchReply: true 
-        });
+            const eventEmbed = new EmbedBuilder()
+                .setColor('#FFA500')
+                .setTitle('📅 ' + title)
+                .addFields(
+                    { name: '開催日時', value: datetime, inline: true },
+                    { name: '詳細', value: description },
+                    { name: '募集締切', value: deadline || '締切なし', inline: true }
+                );
 
-        await message.react('🙆‍♂️');
-        await message.react('🙅‍♂️');
+            const message = await interaction.reply({
+                embeds: [eventEmbed],
+                fetchReply: true
+            });
 
-        eventResponses.set(message.id, {
-            participants: [],
-            declined: [],
-            deadline: deadline,
-            channelId: interaction.channelId
-        });
-        break;
-}
+            await message.react('🙆‍♂️');
+            await message.react('🙅‍♂️');
+
+            eventResponses.set(message.id, {
+                participants: [],
+                declined: [],
+                deadline: deadline,
+                channelId: interaction.channelId
+            });
+            break;
+    }
+});
+
 client.on('messageReactionAdd', async (reaction, user) => {
     if (user.bot) return;
 
@@ -313,7 +320,6 @@ setInterval(async () => {
         }
     }
 }, 60000);
-
 
 
 const http = require('http');
