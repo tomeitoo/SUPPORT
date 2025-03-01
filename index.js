@@ -223,6 +223,100 @@ setInterval(async () => {
         scheduledCrimes.set(guildId, crimes);
     }
 }, 60000);
+
+// /eventコマンド
+const eventResponses = new Map();
+
+client.on('interactionCreate', async interaction => {
+    if (interaction.isCommand() && interaction.commandName === 'event') {
+        const title = interaction.options.getString('title');
+        const datetime = interaction.options.getString('datetime');
+        const description = interaction.options.getString('description');
+        const deadline = interaction.options.getString('deadline');
+
+        const eventEmbed = new EmbedBuilder()
+            .setColor('#FFA500')
+            .setTitle('📅 ' + title)
+            .addFields(
+                { name: '開催日時', value: datetime, inline: true },
+                { name: '詳細', value: description },
+                { name: '募集締切', value: deadline || '締切なし', inline: true }
+            );
+
+        const message = await interaction.reply({ 
+            embeds: [eventEmbed], 
+            fetchReply: true 
+        });
+
+        // リアクションを追加
+        await message.react('🙆‍♂️'); // 参加
+        await message.react('🙅‍♂️'); // 不参加
+        await message.react('🔒'); // 締切
+
+        // イベントデータを保存
+        eventResponses.set(message.id, {
+            participants: [],
+            declined: new Map(),
+            deadline: deadline
+        });
+    }
+});
+
+// リアクション処理の追加
+client.on('messageReactionAdd', async (reaction, user) => {
+    if (user.bot) return;
+
+    const eventData = eventResponses.get(reaction.message.id);
+    if (!eventData) return;
+
+    switch (reaction.emoji.name) {
+        case '✅':
+            eventData.participants.push(user.id);
+            await user.send('参加を記録しました。');
+            break;
+        case '❌':
+            const dmChannel = await user.createDM();
+            await dmChannel.send('不参加の理由を入力してください。');
+            
+            const filter = m => m.author.id === user.id;
+            const collected = await dmChannel.awaitMessages({ filter, max: 1, time: 30000 });
+            
+            const reason = collected.first()?.content || '理由なし';
+            eventData.declined.set(user.id, reason);
+            await user.send('不参加を記録しました。');
+            break;
+    }
+});
+
+// 締切時間チェック用の定期実行
+setInterval(async () => {
+    const now = new Date();
+    
+    for (const [messageId, eventData] of eventResponses.entries()) {
+        if (!eventData.deadline) continue;
+
+        const [hours, minutes] = eventData.deadline.split(':').map(Number);
+        const deadlineTime = new Date();
+        deadlineTime.setHours(hours, minutes, 0);
+
+        if (now >= deadlineTime) {
+            const message = await interaction.channel.messages.fetch(messageId);
+            
+            const summaryEmbed = new EmbedBuilder()
+                .setColor('#FFA500')
+                .setTitle(message.embeds[0].title)
+                .addFields(
+                    { name: '参加者', value: eventData.participants.map(id => `<@${id}>`).join('\n') || 'なし' },
+                    { name: '不参加者/理由', value: Array.from(eventData.declined.entries()).map(([id, reason]) => `<@${id}> / ${reason}`).join('\n') || 'なし' }
+                );
+
+            await message.reply({ embeds: [summaryEmbed] });
+            eventResponses.delete(messageId);
+        }
+    }
+}, 60000);
+
+
 const http = require('http');
 const dotenv = require("dotenv");
 const setPresence = require("./setPresence");  // setPresenceのインポート
