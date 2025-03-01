@@ -17,14 +17,11 @@ npm install
 ```bash
 npm run deploy
 ```
-
 4. ボットを起動
 ```bash
 npm start
 ```
-```
-
-これらのファイルを作成したら、以下のコマンドでセットアップ完了。
+5. これらのファイルを作成したら、以下のコマンドでセットアップ完了。
 ```bash
 npm install
 ```
