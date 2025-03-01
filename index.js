@@ -329,10 +329,11 @@ client.once('ready', () => {
 });
 
 // HTTPサーバーの追加
-const server = http.createServer((req, res) => {
+const server = createServer((req, res) => {
     res.writeHead(200);
     res.end('Bot is running!');
 });
+
 server.listen(8000, () => {
     console.log("Server is running on port 8000");
 });
