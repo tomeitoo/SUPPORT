@@ -164,7 +164,16 @@ client.on('interactionCreate', async interaction => {
             case 'attendance':
     const attendanceStatus = interaction.options.getString('status');
     const attendanceReason = interaction.options.getString('reason');
-    
+    const jpTime = new Date().toLocaleString('ja-JP', {
+        timeZone: 'Asia/Tokyo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+
     const attendanceEmbed = new EmbedBuilder()
         .setColor('#FFA500')
         .setTitle('出欠登録')
@@ -172,16 +181,8 @@ client.on('interactionCreate', async interaction => {
             { name: '出欠', value: attendanceStatus, inline: true },
             { name: '理由', value: attendanceReason, inline: true },
             { name: '登録者', value: interaction.user.tag, inline: true },
-            { name: '登録日時', value: new Date().toLocaleString('ja-JP',{
-                timezone: 'Asia/Tokyo',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false}), inline: false }
+            { name: '使用日時', value: jpTime, inline: false }
         );
-    
     await interaction.reply({ embeds: [attendanceEmbed] });
     break;            
     }
