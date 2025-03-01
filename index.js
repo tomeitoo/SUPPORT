@@ -223,7 +223,6 @@ setInterval(async () => {
         scheduledCrimes.set(guildId, crimes);
     }
 }, 60000);
-const { Client, GatewayIntentBits } = require("discord.js");
 const http = require('http');
 const dotenv = require("dotenv");
 const setPresence = require("./setPresence");  // setPresenceのインポート
