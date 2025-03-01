@@ -1,4 +1,3 @@
-// ファイル先頭の変数宣言部分に統合
 import 'dotenv/config';
 import { Client, GatewayIntentBits, EmbedBuilder } from 'discord.js';
 import { createServer } from 'http';
@@ -51,7 +50,7 @@ client.on('interactionCreate', async interaction => {
             if (amount > currentTreasury) {
                 const errorEmbed = new EmbedBuilder()
                     .setColor('#FFA500')
-                    .setTitle('エラー')
+                    .setTitle('🚨 エラー')
                     .setDescription('⚠︎ 金庫の残高が不足しています。');
                 
                 await interaction.reply({ embeds: [errorEmbed] });
@@ -63,7 +62,7 @@ client.on('interactionCreate', async interaction => {
             
             const expenseEmbed = new EmbedBuilder()
                 .setColor('#FFA500')
-                .setTitle('💸 経費を請求しました')
+                .setTitle('💸 経費を請求しました。')
                 .addFields(
                     { name: '金額', value: `${amount.toLocaleString()}円`, inline: true },
                     { name: '理由', value: reason, inline: true },
@@ -128,8 +127,8 @@ client.on('interactionCreate', async interaction => {
             if (!/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/.test(startTime)) {
                 const timeErrorEmbed = new EmbedBuilder()
                     .setColor('#FFA500')
-                    .setTitle('エラー')
-                    .setDescription('時間形式が正しくありません (HH:MM)');
+                    .setTitle('🚨 エラー')
+                    .setDescription('🕙 時間形式が正しくありません (HH:MM)');
                 
                 await interaction.reply({ embeds: [timeErrorEmbed] });
                 return;
@@ -176,7 +175,7 @@ client.on('interactionCreate', async interaction => {
 
     const attendanceEmbed = new EmbedBuilder()
         .setColor('#FFA500')
-        .setTitle('出欠登録')
+        .setTitle('📅 出欠を登録しました。')
         .addFields(
             { name: '出欠', value: attendanceStatus, inline: true },
             { name: '理由', value: attendanceReason, inline: true },
@@ -221,7 +220,7 @@ setInterval(async () => {
                     crimes.splice(i, 1);
                 }
             } catch (error) {
-                console.error(`通知エラー: ${error}`);
+                console.error(`🚨 通知エラー: ${error}`);
                 crimes.splice(i, 1);
             }
         }
@@ -306,7 +305,7 @@ setInterval(async () => {
                 
                 const summaryEmbed = new EmbedBuilder()
                     .setColor('#FFA500')
-                    .setTitle(`${message.embeds[0].title} - 募集結果`)
+                    .setTitle(`${message.embeds[0].title} - 🔐 募集結果`)
                     .addFields(
                         { name: '参加者', value: eventData.participants.map(id => `<@${id}>`).join('\n') || 'なし' },
                         { name: '不参加者', value: eventData.declined.map(id => `<@${id}>`).join('\n') || 'なし' }
@@ -315,7 +314,7 @@ setInterval(async () => {
                 await message.reply({ embeds: [summaryEmbed] });
                 eventResponses.delete(messageId);
             } catch (error) {
-                console.error('締切処理エラー:', error);
+                console.error('🚨 締切処理エラー:', error);
             }
         }
     }
