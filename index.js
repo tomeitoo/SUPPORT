@@ -221,6 +221,11 @@ client.once('ready', () => {
     console.log(`${client.user.tag} がオンラインになりました！`);
     // その他の設定
 });
+// プレゼンスの設定
+client.once("ready", () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+    setPresence(client); 
+});
 
 
 // 環境変数からトークンを読み込んでボットを起動
