@@ -1,14 +1,17 @@
+// ファイル先頭の変数宣言部分に統合
 import 'dotenv/config';
 import { Client, GatewayIntentBits, EmbedBuilder } from 'discord.js';
-require('dotenv').config();
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+import { createServer } from 'http';
+import setPresence from './setPresence.js';
 
 // クライアントの初期化
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-// グローバル変数の初期化
-let treasuryData = new Map(); // サーバーごとの金庫データ
-let alertRoleData = new Map(); // サーバーごとの警告ロール
-let scheduledCrimes = new Map(); // サーバーごとの予約された犯罪
+
+// グローバル変数の初期化（ここに全ての Map を定義）
+let treasuryData = new Map();
+let alertRoleData = new Map();
+let scheduledCrimes = new Map();
+const eventResponses = new Map();
 
 client.once('ready', () => {
     console.log(`${client.user.tag} がオンラインになりました！`);
@@ -227,7 +230,6 @@ setInterval(async () => {
 }, 60000);
 
 // /eventコマンド
-const eventResponses = new Map();
 switch (commandName) {
 
     case 'event':
