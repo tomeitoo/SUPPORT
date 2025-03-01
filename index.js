@@ -221,10 +221,14 @@ client.once('ready', () => {
     console.log(`${client.user.tag} がオンラインになりました！`);
     // その他の設定
 });
-// プレゼンスの設定
-client.once("ready", () => {
-    console.log(`Logged in as ${client.user.tag}!`);
-    setPresence(client); 
+const dotenv = require("dotenv");
+const setPresence = require("./setPresence");  // setPresenceのインポート
+
+dotenv.config(); // .envファイルの読み込み
+
+client.once('ready', () => {
+    console.log(`${client.user.tag} がオンラインになりました！`);
+    setPresence(client);  // プレゼンスの設定
 });
 
 
