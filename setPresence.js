@@ -1,8 +1,11 @@
 module.exports = function(client) {
-    client.user.setPresence({
-        status: 'online',
-        activities: [{ name: 'サポート中', type: 'PLAYING' }]
-    }).then(() => {
+    try {
+        client.user.setPresence({
+            status: 'online',
+            activities: [{ name: 'サポート中', type: 'PLAYING' }]
+        });
         console.log("Presence updated!");
-    }).catch(console.error); 
+    } catch (error) {
+        console.error("Error updating presence:", error);
+    }
 };
