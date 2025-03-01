@@ -2,7 +2,6 @@
 import 'dotenv/config';
 import { Client, GatewayIntentBits, EmbedBuilder } from 'discord.js';
 import { createServer } from 'http';
-import setPresence from './setPresence.js';
 
 // クライアントの初期化
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -318,7 +317,6 @@ setInterval(async () => {
 
 const http = require('http');
 const dotenv = require("dotenv");
-const setPresence = require("./setPresence");  // setPresenceのインポート
 
 dotenv.config(); // .envファイルの読み込み
 
