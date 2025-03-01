@@ -28,4 +28,3 @@ npm start
 ```bash
 npm install
 ```
-```
