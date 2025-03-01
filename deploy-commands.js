@@ -101,10 +101,40 @@ const commands = [
                 name: 'reason',
                 type: 3, // STRING
                 description: '理由を入力してください',
-                required: true
+                required: false
             }
         ]
-    }
+    },
+    {
+        name: 'event',
+        description: 'イベントを作成',
+        options: [
+            {
+                name: 'title',
+                type: 3,
+                description: 'イベントのタイトル',
+                required: true
+            },
+            {
+                name: 'datetime',
+                type: 3,
+                description: '実施日時 (YYYY/MM/DD HH:MM)',
+                required: true
+            },
+            {
+                name: 'description',
+                type: 3,
+                description: 'イベントの詳細',
+                required: false
+            },
+            {
+                name: 'deadline',
+                type: 3,
+                description: '募集締切時間 (HH:MM)',
+                required: false
+            }
+        ]
+    },
     
 ];
 
