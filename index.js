@@ -321,8 +321,6 @@ setInterval(async () => {
     }
 }, 60000);
 
-dotenv.config(); // .envファイルの読み込み
-
 // 既存のDiscordボットコード
 client.once('ready', () => {
     console.log(`${client.user.tag} がオンラインになりました！`);
